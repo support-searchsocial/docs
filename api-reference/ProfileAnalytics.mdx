@@ -1,0 +1,445 @@
+---
+title: "Profile Audience Report"
+---
+
+# Audience Report API Documentation
+
+## Endpoint
+
+`GET /api/v1/social/audience/report`
+
+## Overview
+
+Generate comprehensive audience demographics and insights reports for social media influencers. This endpoint provides detailed analysis of an influencer's audience including geographic distribution, age demographics, gender breakdown, language preferences, and brand affinities.
+
+## Authentication
+
+Requires Bearer token authentication via `Authorization: Bearer <your_api_key>` header.
+
+## Cost
+
+- **1 token** per successful report generation
+
+- **0 tokens** for dry run requests `dry_run: true`)
+
+## Request Structure
+
+### Basic Request (Query Parameters)
+
+\`\`\`
+
+GET /api/v1/social/audience/report?username=influencer_username&platform=instagram&dry_run=false
+
+\`\`\`
+
+### Complete Request Example
+
+\`\`\`
+
+GET /api/v1/social/audience/report?username=fashion_influencer&platform=instagram&calculation_method=average&subscribe=false&ignore_removed=false&ignore_outdated=false&ignore_empty_audience=false&dry_run=false&filter_geo=1,2&filter_languages=en,es&filter_gender=FEMALE&filter_age_groups=18-24,25-34&filter_following_group=1000-1500&filter_brands=123,456&filter_interests=10,20&filter_exclude_fake=true
+
+\`\`\`
+
+## Request Parameters
+
+### Target User Identification (Required - at least one)
+
+| Parameter | Type | Description |
+
+|-----------|------|-------------|
+
+| `username` | string | Username without @ symbol |
+
+| `user_id` | string | Platform-specific user ID |
+
+| `url` | string | Full profile URL |
+
+### Platform Options
+
+| Parameter | Type | Default | Description |
+
+|-----------|------|---------|-------------|
+
+| `platform` | string | `"instagram"` | Platform type: `instagram`, `youtube`, `tiktok`, `douyin` |
+
+| `calculation_method` | string | `null` | Calculation method: `average` or `median` |
+
+### Report Generation Options
+
+| Parameter | Type | Default | Description |
+
+|-----------|------|---------|-------------|
+
+| `subscribe` | boolean | `null` | Subscribe to monthly updates for this user |
+
+| `ignore_removed` | boolean | `false` | Get data even if account is removed |
+
+| `ignore_outdated` | boolean | `false` | Get data even if outdated |
+
+| `ignore_empty_audience` | boolean | `false` | Ignore empty audience errors |
+
+| `dry_run` | boolean | `false` | Check if report can be built without charging tokens |
+
+### Audience Sampling Filters (Optional)
+
+| Parameter | Type | Description |
+
+|-----------|------|-------------|
+
+| `filter_geo` | string | Comma-separated geo IDs (e.g., `"1,2,3"`) |
+
+| `filter_languages` | string | Comma-separated language codes (e.g., `"en,es,fr"`) |
+
+| `filter_gender` | string | Gender filtering: `MALE` or `FEMALE` |
+
+| `filter_age_groups` | string | Comma-separated age groups (e.g., `"18-24,25-34"`) |
+
+| `filter_following_group` | string | Following count groups: `"-500"`, `"500-1000"`, `"1000-1500"`, `"1500-"` |
+
+| `filter_brands` | string | Comma-separated brand IDs (e.g., `"123,456"`) - Instagram only |
+
+| `filter_interests` | string | Comma-separated interest IDs (e.g., `"10,20"`) - Instagram only |
+
+| `filter_exclude_fake` | boolean | Exclude fake accounts from sampling |
+
+## Response Structure
+
+### Success Response
+
+\`\`\`json
+
+{
+
+  "report_id": "rpt_abc123def456",
+
+  "user_profile": {
+
+    "user_id": "12345678",
+
+    "username": "fashion_influencer",
+
+    "full_name": "Fashion Influencer",
+
+    "bio": "Fashion & Lifestyle Content Creator",
+
+    "followers": 150000,
+
+    "following": 1200,
+
+    "posts": 850,
+
+    "engagement_rate": 4.5,
+
+    "is_verified": true,
+
+    "is_private": false
+
+  },
+
+  "audience_followers": {
+
+    "size": 148000,
+
+    "geo_data": {
+
+      "United States": 45.2,
+
+      "United Kingdom": 12.8,
+
+      "Canada": 8.5,
+
+      "Australia": 6.3
+
+    },
+
+    "gender_data": {
+
+      "female": 78.5,
+
+      "male": 21.5
+
+    },
+
+    "age_data": {
+
+      "18-24": 35.2,
+
+      "25-34": 42.1,
+
+      "35-44": 18.7,
+
+      "45-64": 4.0
+
+    },
+
+    "language_data": {
+
+      "en": 82.4,
+
+      "es": 8.2,
+
+      "fr": 4.1
+
+    },
+
+    "brand_affinity": [
+
+      {
+
+        "name": "Nike",
+
+        "affinity_score": 8.5,
+
+        "category": "Athletic Apparel"
+
+      }
+
+    ],
+
+    "interests": [
+
+      {
+
+        "name": "Fashion",
+
+        "percentage": 45.2
+
+      }
+
+    ]
+
+  },
+
+  "audience_likers": {
+
+    "size": 12500,
+
+    "geo_data": { /\* Similar structure \*/ },
+
+    "gender_data": { /\* Similar structure \*/ },
+
+    "age_data": { /\* Similar structure \*/ }
+
+  },
+
+  "audience_commenters": {
+
+    "size": 3200,
+
+    "geo_data": { /\* Similar structure \*/ }
+
+  },
+
+  "insights": {
+
+    "credibility_score": 8.7,
+
+    "engagement_authenticity": {
+
+      "authentic_engagement_rate": 89.5,
+
+      "suspicious_activity": 2.1
+
+    },
+
+    "audience_quality_metrics": {
+
+      "real_followers_percentage": 94.2,
+
+      "active_followers_percentage": 76.8
+
+    }
+
+  },
+
+  "cost": 1.0,
+
+  "created_at": "2024-01-15T10:30:45Z"
+
+}
+
+\`\`\`
+
+### Dry Run Response
+
+\`\`\`json
+
+{
+
+  "can_generate": true,
+
+  "user_profile": {
+
+    "username": "fashion_influencer",
+
+    "followers": 150000,
+
+    "is_verified": true
+
+  },
+
+  "cost": 0,
+
+  "dry_run": true
+
+}
+
+\`\`\`
+
+### Error Response
+
+\`\`\`json
+
+{
+
+  "success": false,
+
+  "error": "account_not_found",
+
+  "message": "The specified account could not be found or is not accessible",
+
+  "report_info": {
+
+    "retry_after": 300,
+
+    "suggested_alternatives": ["try_user_id_instead"]
+
+  }
+
+}
+
+\`\`\`
+
+## Common Error Codes
+
+| Error Code | Description | Solution |
+
+|------------|-------------|----------|
+
+| `account_not_found` | Account not found or inaccessible | Verify username/ID is correct |
+
+| `empty_audience_data` | Account has insufficient audience data | Try with different account |
+
+| `retry_later_few_minutes` | Data is being updated | Wait and retry in a few minutes |
+
+| `retry_later_n_minutes` | Data update in progress | Wait specified minutes before retry |
+
+| `account_removed` | Account was removed/deleted | Use `ignore_removed: true` for cached data |
+
+| `account_data_removed` | Audience data was removed | Account no longer has audience data |
+
+| `no_tokens_remaining` | Insufficient token balance | Purchase more tokens |
+
+| `subscription_required` | Subscription needed for this feature | Upgrade account plan |
+
+## Usage Examples
+
+### Basic Report Generation
+
+\`\`\`bash
+
+curl -X GET "https://searchsocial.ai/api/v1/social/audience/report?username=influencer_name&platform=instagram" \\
+
+  -H "Authorization: Bearer YOUR_API_KEY"
+
+\`\`\`
+
+### Filtered Report (Female Audience, US/UK Only)
+
+\`\`\`bash
+
+curl -X GET "https://searchsocial.ai/api/v1/social/audience/report?username=fashion_blogger&platform=instagram&filter_gender=FEMALE&filter_geo=1,2&filter_age_groups=18-24,25-34" \\
+
+  -H "Authorization: Bearer YOUR_API_KEY"
+
+\`\`\`
+
+### Dry Run Check
+
+\`\`\`bash
+
+curl -X GET "https://searchsocial.ai/api/v1/social/audience/report?username=test_user&platform=instagram&dry_run=true" \\
+
+  -H "Authorization: Bearer YOUR_API_KEY"
+
+\`\`\`
+
+## Response Fields Explanation
+
+### User Profile
+
+- **user_id**: Platform-specific unique identifier
+
+- **username**: Current username (may change over time)
+
+- **followers/following/posts**: Current counts
+
+- **engagement_rate**: Overall engagement rate percentage
+
+- **is_verified/is_private**: Account status flags
+
+### Audience Data
+
+Each audience type (followers, likers, commenters) includes:
+
+- **size**: Total audience size for this type
+
+- **geo_data**: Country-wise percentage distribution
+
+- **gender_data**: Gender percentage breakdown
+
+- **age_data**: Age group percentage distribution  
+
+- **language_data**: Language preference percentages
+
+- **brand_affinity**: Brand connection scores (Instagram only)
+
+- **interests**: Interest category percentages
+
+### Insights
+
+- **credibility_score**: Overall audience quality score (0-10)
+
+- **engagement_authenticity**: Metrics about genuine vs suspicious engagement
+
+- **audience_quality_metrics**: Real vs fake follower percentages
+
+## Rate Limits
+
+- **10 requests per second** per API key
+
+- **Monthly token limits** based on subscription plan
+
+- **Report storage**: 60 days (can fetch existing reports using report_id)
+
+## Best Practices
+
+1. **Use User IDs**: Prefer `user_id` over `username` when possible (usernames can change)
+
+2. **Check with Dry Run**: Use `dry_run: true` to verify data availability before spending tokens
+
+3. **Handle Retry Errors**: Implement retry logic for `retry_later_*` errors
+
+4. **Cache Results**: Store `report_id` to fetch the same report again within 60 days
+
+5. **Filter Strategically**: Use audience filters to get more targeted insights
+
+6. **Subscribe for Updates**: Use `subscribe: true` for accounts you analyze regularly
+
+## Platform Availability
+
+| Feature | Instagram | YouTube | TikTok | 
+
+|---------|-----------|---------|--------|
+
+| Basic Demographics | ✅ | ✅ | ✅ |
+
+| Brand Affinity | ✅ | ❌ | ❌ |
+
+| Following Groups | ✅ | ❌ | ✅ |
+
+| Fake Account Detection | ✅ | ❌ | ❌ |
+
+| Interest Analysis | ✅ | ✅ | ✅ |
+
+This endpoint provides deep insights into influencer audiences, helping brands make informed partnership decisions and understand audience overlap opportunities.
