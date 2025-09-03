@@ -1,217 +1,3333 @@
 {
-  "openapi": "3.1.0",
-  "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
-    "license": {
-      "name": "MIT"
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Search Social API",
+        "description": "A FastAPI wrapper for Social Platform API with tenant management and token tracking",
+        "version": "1.0.0"
     },
-    "version": "1.0.0"
-  },
-  "servers": [
-    {
-      "url": "http://sandbox.mintlify.com"
-    }
-  ],
-  "security": [
-    {
-      "bearerAuth": []
-    }
-  ],
-  "paths": {
-    "/plants": {
-      "get": {
-        "description": "Returns all plants from the system that the user has access to",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "The maximum number of results to return",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Plant response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Plant"
-                  }
+    "paths": {
+        "/api/v1/tenants/": {
+            "post": {
+                "tags": [
+                    "Tenant Management"
+                ],
+                "summary": "Create Tenant",
+                "operationId": "create_tenant_api_v1_tenants__post",
+                "security": [
+                    {
+                        "HTTPBasic": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TenantCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TenantResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
                 }
-              }
-            }
-          },
-          "400": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
+            },
+            "get": {
+                "tags": [
+                    "Tenant Management"
+                ],
+                "summary": "Get All Tenants",
+                "operationId": "get_all_tenants_api_v1_tenants__get",
+                "security": [
+                    {
+                        "HTTPBasic": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "skip",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 0,
+                            "title": "Skip"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 100,
+                            "title": "Limit"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/TenantResponse"
+                                    },
+                                    "title": "Response Get All Tenants Api V1 Tenants  Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
                 }
-              }
             }
-          }
-        }
-      },
-      "post": {
-        "description": "Creates a new plant in the store",
-        "requestBody": {
-          "description": "Plant to add to the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewPlant"
-              }
-            }
-          },
-          "required": true
         },
-        "responses": {
-          "200": {
-            "description": "plant response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Plant"
+        "/api/v1/tenants/{tenant_id}": {
+            "get": {
+                "tags": [
+                    "Tenant Management"
+                ],
+                "summary": "Get Tenant",
+                "operationId": "get_tenant_api_v1_tenants__tenant_id__get",
+                "security": [
+                    {
+                        "HTTPBasic": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "tenant_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Tenant Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TenantResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
                 }
-              }
             }
-          },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "ID of plant to delete",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
-          },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  "webhooks": {
-    "/plant/webhook": {
-      "post": {
-        "description": "Information about a new plant added to the store",
-        "requestBody": {
-          "description": "Plant added to the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewPlant"
-              }
-            }
-          }
         },
-        "responses": {
-          "200": {
-            "description": "Return a 200 status to indicate that the data was received successfully"
-          }
-        }
-      }
-    }
-  },
-  "components": {
-    "schemas": {
-      "Plant": {
-        "required": [
-          "name"
-        ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "description": "The name of the plant",
-            "type": "string"
-          },
-          "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
-          }
-        }
-      },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
-          },
-          {
-            "required": [
-              "id"
-            ],
-            "type": "object",
-            "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
-              }
+        "/api/v1/tokens/transactions": {
+            "get": {
+                "tags": [
+                    "Token Management"
+                ],
+                "summary": "Get Token Transactions",
+                "operationId": "get_token_transactions_api_v1_tokens_transactions_get",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "skip",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 0,
+                            "title": "Skip"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 100,
+                            "title": "Limit"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/TokenTransactionResponse"
+                                    },
+                                    "title": "Response Get Token Transactions Api V1 Tokens Transactions Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
             }
-          }
-        ]
-      },
-      "Error": {
-        "required": [
-          "error",
-          "message"
-        ],
-        "type": "object",
-        "properties": {
-          "error": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "message": {
-            "type": "string"
-          }
+        },
+        "/api/v1/tokens/usage": {
+            "get": {
+                "tags": [
+                    "Token Management"
+                ],
+                "summary": "Get Token Usage",
+                "operationId": "get_token_usage_api_v1_tokens_usage_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/social/users/search": {
+            "post": {
+                "tags": [
+                    "Unified Social API"
+                ],
+                "summary": "Search Users",
+                "description": "Search users across all platforms with advanced filtering.",
+                "operationId": "search_users_api_v1_social_users_search_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserSearchRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserSearchResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/social/users/by_ids": {
+            "post": {
+                "tags": [
+                    "Unified Social API"
+                ],
+                "summary": "Get Users By Ids",
+                "description": "Get users by IDs across platforms.",
+                "operationId": "get_users_by_ids_api_v1_social_users_by_ids_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UsersByIdsRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserSearchResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/social/users/info": {
+            "post": {
+                "tags": [
+                    "Unified Social API"
+                ],
+                "summary": "Get User Info",
+                "description": "Get detailed user information across platforms.",
+                "operationId": "get_user_info_api_v1_social_users_info_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserInfoRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserInfoResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/social/search/influencers": {
+            "get": {
+                "tags": [
+                    "Unified Social API"
+                ],
+                "summary": "Search Influencers",
+                "description": "Advanced influencer search with comprehensive filtering.",
+                "operationId": "search_influencers_api_v1_social_search_influencers_get",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "query",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Query"
+                        }
+                    },
+                    {
+                        "name": "platform",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/components/schemas/PlatformType"
+                                }
+                            ],
+                            "default": "instagram",
+                            "title": "Platform"
+                        }
+                    },
+                    {
+                        "name": "min_followers",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "integer"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Min Followers"
+                        }
+                    },
+                    {
+                        "name": "max_followers",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "integer"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Max Followers"
+                        }
+                    },
+                    {
+                        "name": "min_engagement_rate",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "number"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Min Engagement Rate"
+                        }
+                    },
+                    {
+                        "name": "max_engagement_rate",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "number"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Max Engagement Rate"
+                        }
+                    },
+                    {
+                        "name": "min_engagement",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "number"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Min Engagement"
+                        }
+                    },
+                    {
+                        "name": "max_engagement",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "number"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Max Engagement"
+                        }
+                    },
+                    {
+                        "name": "geolocations",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Geolocations"
+                        }
+                    },
+                    {
+                        "name": "languages",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Languages"
+                        }
+                    },
+                    {
+                        "name": "language",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Language"
+                        }
+                    },
+                    {
+                        "name": "age_ranges",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Age Ranges"
+                        }
+                    },
+                    {
+                        "name": "genders",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Genders"
+                        }
+                    },
+                    {
+                        "name": "categories",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Categories"
+                        }
+                    },
+                    {
+                        "name": "interests",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Interests"
+                        }
+                    },
+                    {
+                        "name": "brands",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Brands"
+                        }
+                    },
+                    {
+                        "name": "hashtags",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Hashtags"
+                        }
+                    },
+                    {
+                        "name": "relevance_query",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Relevance Query"
+                        }
+                    },
+                    {
+                        "name": "relevance_weight",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "number"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "default": 0.5,
+                            "title": "Relevance Weight"
+                        }
+                    },
+                    {
+                        "name": "relevance_threshold",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "number"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "default": 0.55,
+                            "title": "Relevance Threshold"
+                        }
+                    },
+                    {
+                        "name": "verified_only",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "boolean"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "default": false,
+                            "title": "Verified Only"
+                        }
+                    },
+                    {
+                        "name": "business_accounts",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "boolean"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Business Accounts"
+                        }
+                    },
+                    {
+                        "name": "has_contact_info",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "boolean"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Has Contact Info"
+                        }
+                    },
+                    {
+                        "name": "is_private",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "boolean"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Is Private"
+                        }
+                    },
+                    {
+                        "name": "min_views",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "integer"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Min Views"
+                        }
+                    },
+                    {
+                        "name": "max_views",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "integer"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Max Views"
+                        }
+                    },
+                    {
+                        "name": "min_posts",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "integer"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Min Posts"
+                        }
+                    },
+                    {
+                        "name": "max_posts",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "integer"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Max Posts"
+                        }
+                    },
+                    {
+                        "name": "last_posted_days",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "integer"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Last Posted Days"
+                        }
+                    },
+                    {
+                        "name": "has_audience_data",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "boolean"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Has Audience Data"
+                        }
+                    },
+                    {
+                        "name": "min_audience_credibility",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "number"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Min Audience Credibility"
+                        }
+                    },
+                    {
+                        "name": "audience_credibility_class",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Audience Credibility Class"
+                        }
+                    },
+                    {
+                        "name": "min_followers_growth",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "number"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Min Followers Growth"
+                        }
+                    },
+                    {
+                        "name": "max_followers_growth",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "number"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Max Followers Growth"
+                        }
+                    },
+                    {
+                        "name": "audience_geolocations",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Audience Geolocations"
+                        }
+                    },
+                    {
+                        "name": "audience_languages",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Audience Languages"
+                        }
+                    },
+                    {
+                        "name": "audience_age_ranges",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Audience Age Ranges"
+                        }
+                    },
+                    {
+                        "name": "audience_genders",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Audience Genders"
+                        }
+                    },
+                    {
+                        "name": "audience_min_age",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "integer"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Audience Min Age"
+                        }
+                    },
+                    {
+                        "name": "audience_max_age",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "integer"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Audience Max Age"
+                        }
+                    },
+                    {
+                        "name": "audience_age_weight",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "number"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "default": 0.25,
+                            "title": "Audience Age Weight"
+                        }
+                    },
+                    {
+                        "name": "audience_age_operator",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "default": "gte",
+                            "title": "Audience Age Operator"
+                        }
+                    },
+                    {
+                        "name": "is_official_artist",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "boolean"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Is Official Artist"
+                        }
+                    },
+                    {
+                        "name": "post_type",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "default": "all",
+                            "title": "Post Type"
+                        }
+                    },
+                    {
+                        "name": "has_ads",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "boolean"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Has Ads"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 50,
+                            "title": "Limit"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 0,
+                            "title": "Offset"
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "followers",
+                            "title": "Sort By"
+                        }
+                    },
+                    {
+                        "name": "sort_direction",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "desc",
+                            "title": "Sort Direction"
+                        }
+                    },
+                    {
+                        "name": "auto_unhide",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "boolean"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "default": true,
+                            "title": "Auto Unhide"
+                        }
+                    },
+                    {
+                        "name": "extras",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Extras"
+                        }
+                    },
+                    {
+                        "name": "calculation_method",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Calculation Method"
+                        }
+                    },
+                    {
+                        "name": "audience_source",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "any",
+                            "title": "Audience Source"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SocApiInfluencerSearchResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/social/audience/report": {
+            "get": {
+                "tags": [
+                    "Unified Social API"
+                ],
+                "summary": "Generate Audience Report",
+                "description": "Generate comprehensive audience demographics and insights report for an influencer.",
+                "operationId": "generate_audience_report_api_v1_social_audience_report_get",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Username"
+                        }
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "User Id"
+                        }
+                    },
+                    {
+                        "name": "url",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Url"
+                        }
+                    },
+                    {
+                        "name": "platform",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/components/schemas/PlatformType"
+                                }
+                            ],
+                            "default": "instagram",
+                            "title": "Platform"
+                        }
+                    },
+                    {
+                        "name": "calculation_method",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Calculation Method"
+                        }
+                    },
+                    {
+                        "name": "subscribe",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "boolean"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Subscribe"
+                        }
+                    },
+                    {
+                        "name": "ignore_removed",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "boolean"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "default": false,
+                            "title": "Ignore Removed"
+                        }
+                    },
+                    {
+                        "name": "ignore_outdated",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "boolean"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "default": false,
+                            "title": "Ignore Outdated"
+                        }
+                    },
+                    {
+                        "name": "ignore_empty_audience",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "boolean"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "default": false,
+                            "title": "Ignore Empty Audience"
+                        }
+                    },
+                    {
+                        "name": "dry_run",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "boolean"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "default": false,
+                            "title": "Dry Run"
+                        }
+                    },
+                    {
+                        "name": "filter_geo",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Filter Geo"
+                        }
+                    },
+                    {
+                        "name": "filter_languages",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Filter Languages"
+                        }
+                    },
+                    {
+                        "name": "filter_gender",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Filter Gender"
+                        }
+                    },
+                    {
+                        "name": "filter_age_groups",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Filter Age Groups"
+                        }
+                    },
+                    {
+                        "name": "filter_following_group",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Filter Following Group"
+                        }
+                    },
+                    {
+                        "name": "filter_brands",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Filter Brands"
+                        }
+                    },
+                    {
+                        "name": "filter_interests",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Filter Interests"
+                        }
+                    },
+                    {
+                        "name": "filter_exclude_fake",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "boolean"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Filter Exclude Fake"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/social/dictionary/geolocations": {
+            "get": {
+                "tags": [
+                    "Unified Social API"
+                ],
+                "summary": "Get Geolocations",
+                "description": "Get available geolocations for filtering.",
+                "operationId": "get_geolocations_api_v1_social_dictionary_geolocations_get",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "platform",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/components/schemas/PlatformType"
+                                }
+                            ],
+                            "default": "instagram",
+                            "title": "Platform"
+                        }
+                    },
+                    {
+                        "name": "query",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "title": "Query"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10,
+                            "title": "Limit"
+                        }
+                    },
+                    {
+                        "name": "geo_identifier",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "title": "Geo Identifier"
+                        }
+                    },
+                    {
+                        "name": "types",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "title": "Types"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/social/dictionary/languages": {
+            "get": {
+                "tags": [
+                    "Unified Social API"
+                ],
+                "summary": "Get Languages",
+                "description": "Get supported languages by platform.",
+                "operationId": "get_languages_api_v1_social_dictionary_languages_get",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "platform",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/components/schemas/PlatformType"
+                                }
+                            ],
+                            "default": "instagram",
+                            "title": "Platform"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LanguagesResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/social/dictionary/interests": {
+            "get": {
+                "tags": [
+                    "Unified Social API"
+                ],
+                "summary": "Get Interests",
+                "description": "Get interests and brands.",
+                "operationId": "get_interests_api_v1_social_dictionary_interests_get",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "hide_deprecated",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "default": true,
+                            "title": "Hide Deprecated"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/InterestsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/social/dictionary/tags/relevant": {
+            "post": {
+                "tags": [
+                    "Unified Social API"
+                ],
+                "summary": "Get Relevant Tags",
+                "description": "Get relevant tags for query.",
+                "operationId": "get_relevant_tags_api_v1_social_dictionary_tags_relevant_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RelevantTagsRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TagsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/social/dictionary/tags/topic": {
+            "post": {
+                "tags": [
+                    "Unified Social API"
+                ],
+                "summary": "Get Topic Tags",
+                "description": "Get topic tags by platform.",
+                "operationId": "get_topic_tags_api_v1_social_dictionary_tags_topic_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TopicTagsRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TagsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        },
+        "/": {
+            "get": {
+                "summary": "Root",
+                "operationId": "root__get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "summary": "Health Check",
+                "operationId": "health_check_health_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
         }
-      }
     },
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
-      }
+    "components": {
+        "schemas": {
+            "BrandInfo": {
+                "properties": {
+                    "brand_id": {
+                        "type": "integer",
+                        "title": "Brand Id",
+                        "description": "Brand ID"
+                    },
+                    "name": {
+                        "type": "string",
+                        "title": "Name",
+                        "description": "Brand name"
+                    },
+                    "category": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Category",
+                        "description": "Brand category"
+                    },
+                    "logo_url": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Logo Url",
+                        "description": "Brand logo URL"
+                    },
+                    "website": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Website",
+                        "description": "Brand website"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "brand_id",
+                    "name"
+                ],
+                "title": "BrandInfo",
+                "description": "Brand information"
+            },
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        },
+                        "type": "array",
+                        "title": "Detail"
+                    }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
+            },
+            "InterestInfo": {
+                "properties": {
+                    "interest_id": {
+                        "type": "integer",
+                        "title": "Interest Id",
+                        "description": "Interest ID"
+                    },
+                    "name": {
+                        "type": "string",
+                        "title": "Name",
+                        "description": "Interest name"
+                    },
+                    "category": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Category",
+                        "description": "Interest category"
+                    },
+                    "brands": {
+                        "items": {
+                            "$ref": "#/components/schemas/BrandInfo"
+                        },
+                        "type": "array",
+                        "title": "Brands",
+                        "description": "Related brands",
+                        "default": []
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "interest_id",
+                    "name"
+                ],
+                "title": "InterestInfo",
+                "description": "Interest information"
+            },
+            "InterestsResponse": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "title": "Success",
+                        "description": "Request success status",
+                        "default": true
+                    },
+                    "message": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Message",
+                        "description": "Response message"
+                    },
+                    "interests": {
+                        "items": {
+                            "$ref": "#/components/schemas/InterestInfo"
+                        },
+                        "type": "array",
+                        "title": "Interests",
+                        "description": "List of interests",
+                        "default": []
+                    }
+                },
+                "type": "object",
+                "title": "InterestsResponse",
+                "description": "Response for interests"
+            },
+            "LanguageInfo": {
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "title": "Code",
+                        "description": "Language code"
+                    },
+                    "name": {
+                        "type": "string",
+                        "title": "Name",
+                        "description": "Language name"
+                    },
+                    "native_name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Native Name",
+                        "description": "Native language name"
+                    },
+                    "supported_platforms": {
+                        "items": {
+                            "$ref": "#/components/schemas/PlatformType"
+                        },
+                        "type": "array",
+                        "title": "Supported Platforms",
+                        "description": "Supported platforms",
+                        "default": []
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "code",
+                    "name"
+                ],
+                "title": "LanguageInfo",
+                "description": "Language information"
+            },
+            "LanguagesResponse": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "title": "Success",
+                        "description": "Request success status",
+                        "default": true
+                    },
+                    "message": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Message",
+                        "description": "Response message"
+                    },
+                    "languages": {
+                        "items": {
+                            "$ref": "#/components/schemas/LanguageInfo"
+                        },
+                        "type": "array",
+                        "title": "Languages",
+                        "description": "List of languages",
+                        "default": []
+                    }
+                },
+                "type": "object",
+                "title": "LanguagesResponse",
+                "description": "Response for languages"
+            },
+            "PlatformType": {
+                "type": "string",
+                "enum": [
+                    "instagram",
+                    "youtube",
+                    "tiktok"
+                ],
+                "title": "PlatformType"
+            },
+            "RelevantTagsRequest": {
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "maxLength": 100,
+                        "minLength": 1,
+                        "title": "Query",
+                        "description": "Search query"
+                    },
+                    "platform": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/PlatformType"
+                            }
+                        ],
+                        "description": "Platform",
+                        "default": "instagram"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "query"
+                ],
+                "title": "RelevantTagsRequest",
+                "description": "Request for relevant tags"
+            },
+            "SocApiAccount": {
+                "properties": {
+                    "user_profile": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/SocApiUserProfile"
+                            }
+                        ],
+                        "description": "User profile data"
+                    },
+                    "audience_source": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Audience Source",
+                        "description": "Audience source (likers, followers, commenters)"
+                    },
+                    "search_result_id": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Search Result Id",
+                        "description": "Search result ID for unlock operations"
+                    },
+                    "hidden_result": {
+                        "anyOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Hidden Result",
+                        "description": "Whether result is hidden/requires unlock"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "user_profile"
+                ],
+                "title": "SocApiAccount",
+                "description": "SocAPI account structure"
+            },
+            "SocApiAccountItem": {
+                "properties": {
+                    "account": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/SocApiAccount"
+                            }
+                        ],
+                        "description": "Account data"
+                    },
+                    "match": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/SocApiMatch"
+                            }
+                        ],
+                        "description": "Match data"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "account"
+                ],
+                "title": "SocApiAccountItem",
+                "description": "SocAPI account item structure"
+            },
+            "SocApiInfluencerSearchResponse": {
+                "properties": {
+                    "total": {
+                        "type": "integer",
+                        "title": "Total",
+                        "description": "Total number of results"
+                    },
+                    "accounts": {
+                        "items": {
+                            "$ref": "#/components/schemas/SocApiAccountItem"
+                        },
+                        "type": "array",
+                        "title": "Accounts",
+                        "description": "List of account results",
+                        "default": []
+                    },
+                    "shown_accounts": {
+                        "anyOf": [
+                            {
+                                "items": {
+                                    "type": "integer"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Shown Accounts",
+                        "description": "List of unlocked account IDs (only with auto_unhide=1)"
+                    },
+                    "cost": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Cost",
+                        "description": "Token cost for unlock operations (only with auto_unhide=1)"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "total"
+                ],
+                "title": "SocApiInfluencerSearchResponse",
+                "description": "SocAPI native influencer search response structure"
+            },
+            "SocApiMatch": {
+                "properties": {},
+                "type": "object",
+                "title": "SocApiMatch",
+                "description": "SocAPI match structure"
+            },
+            "SocApiUserProfile": {
+                "properties": {
+                    "user_id": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "User Id",
+                        "description": "User ID"
+                    },
+                    "username": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Username",
+                        "description": "Username"
+                    },
+                    "url": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Url",
+                        "description": "Profile URL"
+                    },
+                    "picture": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Picture",
+                        "description": "Profile picture URL"
+                    },
+                    "fullname": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Fullname",
+                        "description": "Full name"
+                    },
+                    "is_verified": {
+                        "anyOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Is Verified",
+                        "description": "Verified status"
+                    },
+                    "account_type": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Account Type",
+                        "description": "Account type (1=regular, 2=business, 3=creator)"
+                    },
+                    "followers": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Followers",
+                        "description": "Follower count"
+                    },
+                    "engagements": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Engagements",
+                        "description": "Engagement count"
+                    },
+                    "engagement_rate": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Engagement Rate",
+                        "description": "Engagement rate"
+                    },
+                    "hidden_like_posts_rate": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Hidden Like Posts Rate",
+                        "description": "Hidden like posts rate"
+                    },
+                    "avg_views": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Avg Views",
+                        "description": "Average views"
+                    },
+                    "custom_name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Custom Name",
+                        "description": "Custom name (YouTube)"
+                    },
+                    "handle": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Handle",
+                        "description": "Handle"
+                    },
+                    "sec_uid": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Sec Uid",
+                        "description": "Secondary UID"
+                    }
+                },
+                "type": "object",
+                "title": "SocApiUserProfile",
+                "description": "SocAPI user profile structure"
+            },
+            "TagInfo": {
+                "properties": {
+                    "tag_id": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Tag Id",
+                        "description": "Tag ID"
+                    },
+                    "name": {
+                        "type": "string",
+                        "title": "Name",
+                        "description": "Tag name"
+                    },
+                    "category": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Category",
+                        "description": "Tag category"
+                    },
+                    "usage_count": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Usage Count",
+                        "description": "Usage count"
+                    },
+                    "trend_score": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Trend Score",
+                        "description": "Trend score"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "name"
+                ],
+                "title": "TagInfo",
+                "description": "Tag information"
+            },
+            "TagsResponse": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "title": "Success",
+                        "description": "Request success status",
+                        "default": true
+                    },
+                    "message": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Message",
+                        "description": "Response message"
+                    },
+                    "tags": {
+                        "items": {
+                            "$ref": "#/components/schemas/TagInfo"
+                        },
+                        "type": "array",
+                        "title": "Tags",
+                        "description": "List of tags",
+                        "default": []
+                    }
+                },
+                "type": "object",
+                "title": "TagsResponse",
+                "description": "Response for tags"
+            },
+            "TenantCreateRequest": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "email": {
+                        "type": "string",
+                        "title": "Email"
+                    },
+                    "total_tokens": {
+                        "type": "number",
+                        "title": "Total Tokens",
+                        "default": 1000
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "name",
+                    "email"
+                ],
+                "title": "TenantCreateRequest"
+            },
+            "TenantResponse": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "title": "Id"
+                    },
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "email": {
+                        "type": "string",
+                        "title": "Email"
+                    },
+                    "api_key": {
+                        "type": "string",
+                        "title": "Api Key"
+                    },
+                    "secret_key": {
+                        "type": "string",
+                        "title": "Secret Key"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/TenantStatus"
+                    },
+                    "total_tokens": {
+                        "type": "number",
+                        "title": "Total Tokens"
+                    },
+                    "used_tokens": {
+                        "type": "number",
+                        "title": "Used Tokens"
+                    },
+                    "remaining_tokens": {
+                        "type": "number",
+                        "title": "Remaining Tokens"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Updated At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "name",
+                    "email",
+                    "api_key",
+                    "secret_key",
+                    "status",
+                    "total_tokens",
+                    "used_tokens",
+                    "remaining_tokens",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "TenantResponse"
+            },
+            "TenantStatus": {
+                "type": "string",
+                "enum": [
+                    "active",
+                    "inactive",
+                    "suspended"
+                ],
+                "title": "TenantStatus"
+            },
+            "TokenTransactionResponse": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "title": "Id"
+                    },
+                    "tenant_id": {
+                        "type": "string",
+                        "title": "Tenant Id"
+                    },
+                    "transaction_type": {
+                        "$ref": "#/components/schemas/TokenTransactionType"
+                    },
+                    "tokens": {
+                        "type": "number",
+                        "title": "Tokens"
+                    },
+                    "platform": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/PlatformType"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "endpoint": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Endpoint"
+                    },
+                    "description": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Description"
+                    },
+                    "cost": {
+                        "type": "number",
+                        "title": "Cost"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "tenant_id",
+                    "transaction_type",
+                    "tokens",
+                    "platform",
+                    "endpoint",
+                    "description",
+                    "cost",
+                    "created_at"
+                ],
+                "title": "TokenTransactionResponse"
+            },
+            "TokenTransactionType": {
+                "type": "string",
+                "enum": [
+                    "debit",
+                    "credit"
+                ],
+                "title": "TokenTransactionType"
+            },
+            "TopicTagsRequest": {
+                "properties": {
+                    "platform": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/PlatformType"
+                            }
+                        ],
+                        "description": "Platform",
+                        "default": "instagram"
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "maximum": 1000,
+                        "minimum": 1,
+                        "title": "Limit",
+                        "description": "Number of results",
+                        "default": 100
+                    },
+                    "offset": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "title": "Offset",
+                        "description": "Offset for pagination",
+                        "default": 0
+                    },
+                    "category": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Category",
+                        "description": "Tag category filter"
+                    }
+                },
+                "type": "object",
+                "title": "TopicTagsRequest",
+                "description": "Request for topic tags"
+            },
+            "UserDetailedInfo": {
+                "properties": {
+                    "user_id": {
+                        "type": "string",
+                        "title": "User Id",
+                        "description": "User ID"
+                    },
+                    "username": {
+                        "type": "string",
+                        "title": "Username",
+                        "description": "Username"
+                    },
+                    "display_name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Display Name",
+                        "description": "Display name"
+                    },
+                    "profile_picture_url": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Profile Picture Url",
+                        "description": "Profile picture URL"
+                    },
+                    "is_verified": {
+                        "type": "boolean",
+                        "title": "Is Verified",
+                        "description": "Verification status",
+                        "default": false
+                    },
+                    "is_private": {
+                        "type": "boolean",
+                        "title": "Is Private",
+                        "description": "Privacy status",
+                        "default": false
+                    },
+                    "platform": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/PlatformType"
+                            }
+                        ],
+                        "description": "Platform"
+                    },
+                    "bio": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Bio",
+                        "description": "User biography"
+                    },
+                    "follower_count": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Follower Count",
+                        "description": "Number of followers"
+                    },
+                    "following_count": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Following Count",
+                        "description": "Number of following"
+                    },
+                    "post_count": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Post Count",
+                        "description": "Number of posts"
+                    },
+                    "engagement_rate": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Engagement Rate",
+                        "description": "Engagement rate percentage"
+                    },
+                    "avg_likes": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Avg Likes",
+                        "description": "Average likes per post"
+                    },
+                    "avg_comments": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Avg Comments",
+                        "description": "Average comments per post"
+                    },
+                    "location": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Location",
+                        "description": "User location"
+                    },
+                    "website": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Website",
+                        "description": "Website URL"
+                    },
+                    "email": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Email",
+                        "description": "Contact email"
+                    },
+                    "phone": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Phone",
+                        "description": "Contact phone"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "user_id",
+                    "username",
+                    "platform"
+                ],
+                "title": "UserDetailedInfo",
+                "description": "Detailed user information"
+            },
+            "UserInfoRequest": {
+                "properties": {
+                    "platform": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/PlatformType"
+                            }
+                        ],
+                        "description": "Social media platform",
+                        "default": "instagram"
+                    },
+                    "user_id": {
+                        "type": "string",
+                        "title": "User Id",
+                        "description": "User ID or username"
+                    },
+                    "include_stories": {
+                        "anyOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Include Stories",
+                        "description": "Include stories data (Instagram only)",
+                        "default": false
+                    },
+                    "include_highlights": {
+                        "anyOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Include Highlights",
+                        "description": "Include highlights data (Instagram only)",
+                        "default": false
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "user_id"
+                ],
+                "title": "UserInfoRequest",
+                "description": "Request model for user info"
+            },
+            "UserInfoResponse": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "title": "Success",
+                        "description": "Request success status",
+                        "default": true
+                    },
+                    "message": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Message",
+                        "description": "Response message"
+                    },
+                    "user": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/UserDetailedInfo"
+                            }
+                        ],
+                        "description": "User information"
+                    },
+                    "insights": {
+                        "anyOf": [
+                            {
+                                "type": "object"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Insights",
+                        "description": "Additional insights"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "user"
+                ],
+                "title": "UserInfoResponse",
+                "description": "Response for user info"
+            },
+            "UserSearchRequest": {
+                "properties": {
+                    "platform": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/PlatformType"
+                            }
+                        ],
+                        "description": "Social media platform",
+                        "default": "instagram"
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "maximum": 500,
+                        "minimum": 1,
+                        "title": "Limit",
+                        "description": "Number of results to return",
+                        "default": 50
+                    },
+                    "offset": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "title": "Offset",
+                        "description": "Offset for pagination",
+                        "default": 0
+                    },
+                    "q": {
+                        "type": "string",
+                        "maxLength": 200,
+                        "minLength": 1,
+                        "title": "Q",
+                        "description": "Search query"
+                    },
+                    "include_verified": {
+                        "anyOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Include Verified",
+                        "description": "Include only verified users"
+                    },
+                    "min_followers": {
+                        "anyOf": [
+                            {
+                                "type": "integer",
+                                "minimum": 0
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Min Followers",
+                        "description": "Minimum follower count"
+                    },
+                    "max_followers": {
+                        "anyOf": [
+                            {
+                                "type": "integer",
+                                "minimum": 0
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Max Followers",
+                        "description": "Maximum follower count"
+                    },
+                    "geolocation": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Geolocation",
+                        "description": "Geolocation identifier (city, region, or coordinates)"
+                    },
+                    "language": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "maxLength": 10
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Language",
+                        "description": "Language code"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "q"
+                ],
+                "title": "UserSearchRequest",
+                "description": "Request model for user search"
+            },
+            "UserSearchResponse": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "title": "Success",
+                        "description": "Request success status",
+                        "default": true
+                    },
+                    "message": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Message",
+                        "description": "Response message"
+                    },
+                    "total_count": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Total Count",
+                        "description": "Total number of items"
+                    },
+                    "has_more": {
+                        "type": "boolean",
+                        "title": "Has More",
+                        "description": "Whether more items are available",
+                        "default": false
+                    },
+                    "next_cursor": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Next Cursor",
+                        "description": "Cursor for next page"
+                    },
+                    "users": {
+                        "items": {
+                            "$ref": "#/components/schemas/UserDetailedInfo"
+                        },
+                        "type": "array",
+                        "title": "Users",
+                        "description": "List of users",
+                        "default": []
+                    }
+                },
+                "type": "object",
+                "title": "UserSearchResponse",
+                "description": "Response for user search"
+            },
+            "UsersByIdsRequest": {
+                "properties": {
+                    "platform": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/PlatformType"
+                            }
+                        ],
+                        "description": "Social media platform",
+                        "default": "instagram"
+                    },
+                    "user_ids": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "maxItems": 100,
+                        "minItems": 1,
+                        "title": "User Ids",
+                        "description": "List of user IDs"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "user_ids"
+                ],
+                "title": "UsersByIdsRequest",
+                "description": "Request model for getting users by IDs"
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Location"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Error Type"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "title": "ValidationError"
+            }
+        },
+        "securitySchemes": {
+            "HTTPBasic": {
+                "type": "http",
+                "scheme": "basic"
+            },
+            "HTTPBearer": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        }
     }
-  }
 }
